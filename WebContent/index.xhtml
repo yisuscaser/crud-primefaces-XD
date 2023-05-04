@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>CRUD PRIME FACES</title>
+</h:head>
+<h:body>
+	<h:form>
+		<p:commandButton value="Agregar Persona" icon="ui-icon-check"
+			actionListener="#{controllerPersona.limpiarPersona()}"
+			oncomplete="PF('dialogoAgregar').show();" update=":formAgregar">
+		</p:commandButton>
+	</h:form>
+
+	<p:separator />
+
+	<h:form id="formListado">
+		<p:dataTable id="tablePersonas" paginator="true"
+			paginatorPosition="bottom" rows="10" var="persona"
+			value="#{controllerPersona.listPersonas}"
+			emptyMessage="No hay registros">
+			<p:column headertText="ID">
+				<h:outputText value="#{persona.id}" />
+			</p:column>
+
+			<p:column headertText="NOMBRE">
+				<h:outputText value="#{persona.nombre}" />
+			</p:column>
+
+			<p:column headertText="TELEFONO">
+				<h:outputText value="#{persona.telefono}" />
+			</p:column>
+
+			<p:column headerText="MODIFICAR" style="text-align: center"
+				exportable="false">
+				<p:commandButton icon="ui-icon-pencil" title="Modificar"
+					oncomplete="PF('dialogoModificar').show();" update=":formModificar">
+					<f:setPropertyActionListener value="#{persona}"
+						target="#{controllerPersona.persona}" />
+				</p:commandButton>
+			</p:column>
+
+			<p:column headerText="ELIMINAR" style="text-align: center"
+				exportable="false">
+				<p:commandButton icon="ui-icon-trash" title="Eliminar"
+					oncomplete="PF('dialogoEliminar').show();" update=":formEliminar">
+					<f:setPropertyActionListener value="#{persona}"
+						target="#{controllerPersona.persona}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:separator />
+
+		<!-- REPORTE DE PERSONAS -->
+		<p:panel header="Reporte de personas">
+
+			<!-- xmlbeans-2.5.0.jar -->
+			<p:commandButton value="Exportar a XML" ajax="false">
+				<p:dataExporter type="xml" target="tablePersonas"
+					fileName="reportePersonas"></p:dataExporter>
+			</p:commandButton>
+
+			<!-- poi-3.10-FINAL.jar -->
+			<p:commandButton value="Exportar a CSV" ajax="false">
+				<p:dataExporter type="csv" target="tablePersonas"
+					fileName="reportePersonas"></p:dataExporter>
+			</p:commandButton>
+
+			<!-- itext-2.1.7.jar -->
+			<p:commandButton value="Exportar a PDF" ajax="false">
+				<p:dataExporter type="pdf" target="tablePersonas"
+					fileName="reportePersonas"></p:dataExporter>
+			</p:commandButton>
+		</p:panel>
+	</h:form>
+
+	<h:form id="formAgregar">
+		<p:dialog id="dlgAgregar" header="Agregar" widgetVar="dialogoAgregar"
+			resizable="false" showEffect="fade" hideEffect="explode" modal="true">
+			<p:panelGrid columns="2" style="margin: 0 auto;">
+				<p:outputLabel value="NOMBRE" />
+				<p:inputText value="#{controllerPersona.persona.nombre}" />
+				<p:outputLabel value="TELEFONO" />
+				<p:inputText value="#{controllerPersona.persona.telefono}" />
+			</p:panelGrid>
+
+			<p:commandButton value="Guardar"
+				actionListener="#{controllerPersona.agregarPersona()}"
+				update=":formListado:tablePersonas"
+				oncomplete="PF('dialogoAgregar').hide();">
+			</p:commandButton>
+
+			<p:commandButton value="Cancelar"
+				onclick="PF('dialogoAgregar').hide();">
+			</p:commandButton>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="formModificar">
+		<p:dialog id="dlgModificar" header="Modificar"
+			widgetVar="dialogoModificar" resizable="false" showEffect="fade"
+			hideEffect="explode" modal="true">
+			<p:panelGrid columns="2" style="margin: 0 auto;">
+				<p:outputLabel value="NOMBRE" />
+				<p:inputText value="#{controllerPersona.persona.nombre}" />
+				<p:outputLabel value="TELEFONO" />
+				<p:inputText value="#{controllerPersona.persona.telefono}" />
+			</p:panelGrid>
+
+			<p:commandButton value="Actualizar"
+				actionListener="#{controllerPersona.modificarPersona()}"
+				update=":formListado:tablePersonas"
+				oncomplete="PF('dialogoModificar').hide();">
+			</p:commandButton>
+
+			<p:commandButton value="Cancelar"
+				onclick="PF('dialogoModificar').hide();">
+			</p:commandButton>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="formEliminar">
+		<p:dialog id="dlgEliminar" header="Modificar"
+			widgetVar="dialogoEliminar" resizable="false" showEffect="fade"
+			hideEffect="explode" modal="true">
+			<p:outputLabel value="Realmente desea eliminar?" />
+
+			<p:commandButton value="Si"
+				actionListener="#{controllerPersona.eliminarPersona()}"
+				update=":formListado:tablePersonas"
+				oncomplete="PF('dialogoEliminar').hide();">
+			</p:commandButton>
+
+			<p:commandButton value="Cancelar"
+				onclick="PF('dialogoEliminar').hide();">
+			</p:commandButton>
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>
